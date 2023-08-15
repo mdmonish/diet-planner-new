@@ -1,9 +1,12 @@
 import "./App.css";
+import MealContainer from "./components/MealContainer";
+import MealType from "./components/MealType";
 
 function App() {
   return (
     <div className="App">
-      <h1 className="text-3xl font-bold underline">Hello world!</h1>
+      <MealType />
+      <MealContainer />
     </div>
   );
 }
