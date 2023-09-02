@@ -1,0 +1,10 @@
+body {
+  font-family: "Inter", sans-serif;
+  font-family: "Roboto Slab", serif;
+  background: linear-gradient(
+    to right,
+    rgb(199, 210, 254),
+    rgb(254, 202, 202),
+    rgb(254, 249, 195)
+  );
+}

@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { TrashSimple } from "@phosphor-icons/react";
 
 const MealsList = ({ meals, setMeals }) => {
   const [editingMealIndex, setEditingMealIndex] = useState(null);
@@ -10,21 +11,6 @@ const MealsList = ({ meals, setMeals }) => {
     setMeals(updatedMeals);
   };
 
-  const handleUpdateMeal = () => {
-    if (inputMeal.trim() !== "") {
-      const updatedMeals = [...meals];
-      updatedMeals[editingMealIndex] = inputMeal;
-      setMeals(updatedMeals);
-      setInputMeal("");
-      setEditingMealIndex(null);
-    }
-  };
-
-  const handleEditMeal = (index) => {
-    setEditingMealIndex(index);
-    setInputMeal(meals[index]);
-  };
-
   return (
     <div>
       <ul className="h-[20vh] overflow-y-auto py-1">
@@ -32,7 +18,7 @@ const MealsList = ({ meals, setMeals }) => {
           <>
             <li
               key={index}
-              className="mb-2 flex items-center justify-between bg-white text-xs"
+              className="mb-2 flex items-center justify-between rounded-md border border-black bg-yellow-100 p-1 text-sm"
             >
               {editingMealIndex === index ? (
                 <input
@@ -46,9 +32,6 @@ const MealsList = ({ meals, setMeals }) => {
               )}
               {editingMealIndex === index ? (
                 <div className="space-x-2">
-                  {/* <button className="text-blue-500" onClick={handleUpdateMeal}>
-                  Update
-                </button> */}
                   <button
                     className="text-red-500"
                     onClick={() => {
@@ -61,18 +44,12 @@ const MealsList = ({ meals, setMeals }) => {
                 </div>
               ) : (
                 <div className="space-x-2">
-                  {/* <button
-                  className="text-blue-500"
-                  onClick={() => handleEditMeal(index)}
-                >
-                  ✏
-                </button> */}
-                  <button
-                    className="text-red-500"
+                  <TrashSimple
+                    className="cursor-pointer"
+                    size={20}
+                    color="red"
                     onClick={() => handleDeleteMeal(index)}
-                  >
-                    ❌
-                  </button>
+                  />
                 </div>
               )}
             </li>

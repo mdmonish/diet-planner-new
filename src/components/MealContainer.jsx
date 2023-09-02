@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import MealPopup from "./MealPopup";
 import MealsList from "./MealsList";
+import { PlusCircle, Swap } from "@phosphor-icons/react";
 
 const MealContainer = ({
   copy,
@@ -54,7 +55,6 @@ const MealContainer = ({
       setCopy("");
     }
   };
-  console.log(copy, day);
 
   return (
     <div className="relative">
@@ -65,18 +65,23 @@ const MealContainer = ({
             : copy?.detail?.dayId === day?.dayId
             ? "border-2 border-red-500"
             : ""
-        } border p-3`}
+        }border mb-2 mr-2 rounded-lg border border-gray-500 bg-violet-300 p-3 shadow-xl`}
       >
         <MealsList meals={mealsList} setMeals={setMealsList} />
 
-        <div className="text-center">
-          <button
-            className="rounded-full bg-blue-500 px-2.5 py-1 text-white"
+        <div className="flex justify-center text-center">
+          <PlusCircle
+            className="cursor-pointer"
+            size={32}
+            color="blue"
             onClick={() => setTogglePopup(true)}
-          >
-            +
-          </button>{" "}
-          <button onClick={() => handleCopy(day)}>🔃</button>
+          />
+          <Swap
+            className="cursor-pointer"
+            onClick={() => handleCopy(day)}
+            color="green"
+            size={32}
+          />
         </div>
       </div>
       {togglePopup && (

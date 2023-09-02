@@ -6,10 +6,10 @@ const DayMealContainer = ({ dietDetails, setDietDetails }) => {
   const [copy, setCopy] = useState("");
   return (
     <div className="container mx-auto">
-      <div className="grid grid-cols-8">
+      <div className="border-red grid grid-cols-8">
         {dietDetails.map((meal, i) => (
           <>
-            <div className="bg-green-100 p-4">
+            <div className="mb-2 mr-4 rounded-md border border-black bg-yellow-100 p-4 shadow-xl">
               <MealType
                 mealDetails={meal.mealDetails}
                 id={i}
