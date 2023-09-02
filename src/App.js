@@ -1,9 +1,7 @@
-import { useContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import "./App.css";
 import DayMealContainer from "./components/DayMealContainer";
 import { mealData } from "./data";
-import store from "./redux/store";
-import axios from "axios";
 
 function App() {
   const days = ["Day 1", "Day 2", "Day 3", "Day 4", "Day 5", "Day 6", "Day 7"];
@@ -17,7 +15,7 @@ function App() {
 
   return (
     <div className="App">
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-8 text-center h-[25vh]">
+      <div className="grid h-[25vh] grid-cols-1 grid-cols-8 place-items-center">
         <div></div>
         {days.map((day, index) => (
           <h3 key={`${day}~~${index}`}>{day}</h3>

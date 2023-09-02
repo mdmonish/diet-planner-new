@@ -14,7 +14,7 @@ const MealPopup = ({ setTogglePopup, setMealsList, mealsList }) => {
 
   const handleAddMeal = () => {
     const duplicate = legacy.find(
-      item => item?.label?.toLowerCase() === newMeal?.toLowerCase()?.trim()
+      (item) => item?.label?.toLowerCase() === newMeal?.toLowerCase()?.trim(),
     );
     if (newMeal.trim() !== "" && !duplicate) {
       setMeals([...meals, newMeal]);
@@ -23,7 +23,7 @@ const MealPopup = ({ setTogglePopup, setMealsList, mealsList }) => {
     }
   };
 
-  const handleEditMeal = index => {
+  const handleEditMeal = (index) => {
     setEditingMealIndex(index);
     setNewMeal(meals[index]);
   };
@@ -38,53 +38,53 @@ const MealPopup = ({ setTogglePopup, setMealsList, mealsList }) => {
     }
   };
 
-  const handleDeleteMeal = index => {
+  const handleDeleteMeal = (index) => {
     const updatedMeals = [...meals];
     updatedMeals.splice(index, 1);
     setMeals(updatedMeals);
   };
 
-  const handleOutside = e => {
+  const handleOutside = (e) => {
     if (e.target.id === "con") setTogglePopup(false);
   };
 
   return (
     // <div className="bg-gray-100 p-4 z-50 w-full mx-auto backdrop-blur-md">
     <div
-      className="z-50 fixed inset-0 bg-opacity-40 backdrop-blur-sm"
+      className="fixed inset-0 z-50 bg-opacity-40 backdrop-blur-sm"
       id="con"
       onClick={handleOutside}
     >
       <div
-        className="w-1/3 min-h-[50vh] mx-auto mt-28 border border-gray-400 bg-gray-100 p-4 rounded-md"
+        className="mx-auto mt-28 min-h-[50vh] w-1/3 rounded-md border border-gray-400 bg-gray-100 p-4"
         id="inside"
       >
-        <h2 className="text-xl font-semibold mb-4">Create Meals List</h2>
+        <h2 className="mb-4 text-xl font-semibold">Create Meals List</h2>
         <div className="flex">
           <div className="relative w-8/12">
             <input
               type="text"
-              className=" border border-gray-300 rounded w-full px-2 py-1"
+              className=" w-full rounded border border-gray-300 px-2 py-1"
               placeholder="Enter a meal"
               value={newMeal}
-              onChange={e => setNewMeal(e.target.value)}
+              onChange={(e) => setNewMeal(e.target.value)}
             />
             {newMeal && (
               <div
-                className="overflow-y-auto max-h-[20vh] absolute z-10 bg-white w-full overflow-x-hidden shadow-md py-2 cursor-pointer text-sm"
-                onClick={e => {
+                className="absolute z-10 max-h-[20vh] w-full cursor-pointer overflow-y-auto overflow-x-hidden bg-white py-2 text-sm shadow-md"
+                onClick={(e) => {
                   setMeals([...meals, e.target.value]);
                   setNewMeal("");
                 }}
               >
                 {legacy
-                  .filter(out =>
+                  .filter((out) =>
                     out.label
                       .toLowerCase()
-                      .includes(newMeal.toLowerCase().trim())
+                      .includes(newMeal.toLowerCase().trim()),
                   )
-                  .map(opt => (
-                    <option className="hover:bg-gray-100 px-2" key={opt.value}>
+                  .map((opt) => (
+                    <option className="px-2 hover:bg-gray-100" key={opt.value}>
                       {opt.label}
                     </option>
                   ))}
@@ -100,7 +100,7 @@ const MealPopup = ({ setTogglePopup, setMealsList, mealsList }) => {
                 Update
               </button> */}
               <button
-                className="bg-red-500 w-2/5 text-white px-3 py-1 rounded"
+                className="w-2/5 rounded bg-red-500 px-3 py-1 text-white"
                 onClick={() => setEditingMealIndex(null)}
               >
                 Cancel
@@ -108,18 +108,18 @@ const MealPopup = ({ setTogglePopup, setMealsList, mealsList }) => {
             </div>
           ) : (
             <button
-              className="bg-green-500 w-3/12 mx-auto text-white px-3 py-1 rounded"
+              className="mx-auto w-3/12 rounded bg-green-500 px-3 py-1 text-white"
               onClick={handleAddMeal}
             >
               Add Meal
             </button>
           )}
         </div>
-        <ul className="mt-4 overflow-y-auto h-[30vh]">
+        <ul className="mt-4 h-[30vh] overflow-y-auto">
           {meals?.map((meal, index) => (
             <li
               key={index}
-              className="bg-white p-2 flex justify-between items-center text-md border border-b-1"
+              className="text-md border-b-1 flex items-center justify-between border bg-white p-2"
             >
               <span>{meal}</span>
               <div className="space-x-2">
@@ -141,7 +141,7 @@ const MealPopup = ({ setTogglePopup, setMealsList, mealsList }) => {
         </ul>
 
         <button
-          className={`bg-blue-500 text-white px-3 py-1 rounded ${
+          className={`rounded bg-blue-500 px-3 py-1 text-white ${
             meals.length === 0 ? "cursor-not-allowed" : ""
           }`}
           disabled={meals.length === 0}

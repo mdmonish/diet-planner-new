@@ -4,7 +4,7 @@ const MealsList = ({ meals, setMeals }) => {
   const [editingMealIndex, setEditingMealIndex] = useState(null);
   const [inputMeal, setInputMeal] = useState("");
 
-  const handleDeleteMeal = index => {
+  const handleDeleteMeal = (index) => {
     const updatedMeals = [...meals];
     updatedMeals.splice(index, 1);
     setMeals(updatedMeals);
@@ -20,7 +20,7 @@ const MealsList = ({ meals, setMeals }) => {
     }
   };
 
-  const handleEditMeal = index => {
+  const handleEditMeal = (index) => {
     setEditingMealIndex(index);
     setInputMeal(meals[index]);
   };
@@ -32,13 +32,13 @@ const MealsList = ({ meals, setMeals }) => {
           <>
             <li
               key={index}
-              className="bg-white flex justify-between items-center mb-2 text-xs"
+              className="mb-2 flex items-center justify-between bg-white text-xs"
             >
               {editingMealIndex === index ? (
                 <input
                   type="text"
                   value={inputMeal}
-                  onChange={e => setInputMeal(e.target.value)}
+                  onChange={(e) => setInputMeal(e.target.value)}
                   autoFocus
                 />
               ) : (

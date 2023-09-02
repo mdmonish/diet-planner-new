@@ -25,10 +25,10 @@ const MealContainer = ({
   }, [mealsList]);
 
   const findIndex = (mealData, selected) => {
-    return mealData.Days.findIndex(day => day.dayId === selected.dayId);
+    return mealData.Days.findIndex((day) => day.dayId === selected.dayId);
   };
 
-  const handleCopy = obj => {
+  const handleCopy = (obj) => {
     if (!copy) {
       setCopy({ id: id, detail: obj });
     } else {
@@ -61,17 +61,17 @@ const MealContainer = ({
       <div
         className={`${
           togglePopup
-            ? "backdrop-blur-md overflow-hidden"
+            ? "overflow-hidden backdrop-blur-md"
             : copy?.detail?.dayId === day?.dayId
             ? "border-2 border-red-500"
             : ""
-        } p-3 border`}
+        } border p-3`}
       >
         <MealsList meals={mealsList} setMeals={setMealsList} />
 
         <div className="text-center">
           <button
-            className="bg-blue-500 text-white px-2.5 py-1 rounded-full"
+            className="rounded-full bg-blue-500 px-2.5 py-1 text-white"
             onClick={() => setTogglePopup(true)}
           >
             +

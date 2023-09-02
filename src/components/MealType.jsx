@@ -7,7 +7,7 @@ const MealType = ({ mealDetails, setDietDetails, id, dietDetails }) => {
     setTime(mealDetails.time);
   }, [mealDetails]);
 
-  const handleOnChange = e => {
+  const handleOnChange = (e) => {
     setTime(e.target.value);
     const copy = [...dietDetails];
     copy[id].mealDetails = {
