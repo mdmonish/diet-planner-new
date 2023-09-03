@@ -2,6 +2,8 @@ import { useEffect, useState } from "react";
 import "./App.css";
 import DayMealContainer from "./components/DayMealContainer";
 import { mealData } from "./data";
+import { PDFDownloadLink } from "@react-pdf/renderer";
+import PDF from "./PDF";
 
 function App() {
   const days = ["Day 1", "Day 2", "Day 3", "Day 4", "Day 5", "Day 6", "Day 7"];
@@ -15,6 +17,11 @@ function App() {
 
   return (
     <div className="App">
+      <PDFDownloadLink document={<PDF mealData={mealData} />} fileName="md.pdf">
+        {({ blob, url, loading, error }) =>
+          loading ? "Loading document..." : "Download now!"
+        }
+      </PDFDownloadLink>
       <div className="container mx-auto">
         <div className="grid h-[10vh] grid-cols-8 place-items-center">
           <div></div>

@@ -58,7 +58,7 @@ const MealPopup = ({ setTogglePopup, setMealsList, mealsList }) => {
               <div
                 className="absolute z-10 max-h-[20vh] w-full cursor-pointer overflow-y-auto bg-white py-2 text-sm shadow-md"
                 onClick={(e) => {
-                  setMeals([...meals, e.target.value]);
+                  if (e.target.value) setMeals([...meals, e.target.value]);
                   setNewMeal("");
                 }}
               >
