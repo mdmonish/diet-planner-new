@@ -11,7 +11,7 @@ const MealType = ({ mealDetails, setDietDetails, id, dietDetails }) => {
     setTime(e.target.value);
     const copy = [...dietDetails];
     copy[id].mealDetails = {
-      ...copy[id - 1].mealDetails,
+      ...copy[id].mealDetails,
       time: e.target.value,
     };
     setDietDetails(copy);
