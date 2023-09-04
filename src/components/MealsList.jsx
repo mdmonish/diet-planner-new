@@ -18,7 +18,7 @@ const MealsList = ({ meals, setMeals }) => {
           <>
             <li
               key={index}
-              className="mb-2 flex items-center justify-between rounded-md border border-black bg-yellow-100 p-1 text-sm"
+              className="mb-2 flex items-center justify-between rounded-md border border-black bg-white p-1 text-sm"
             >
               {editingMealIndex === index ? (
                 <input

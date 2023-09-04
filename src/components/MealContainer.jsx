@@ -65,7 +65,7 @@ const MealContainer = ({
             : copy?.detail?.dayId === day?.dayId
             ? "border-2 border-red-500"
             : ""
-        }border mb-2 mr-2 rounded-lg border border-gray-500 bg-violet-300 p-3 shadow-xl`}
+        }border mb-2 mr-2 rounded-lg border border-gray-500 bg-violet-400 p-3 shadow-xl`}
       >
         <MealsList meals={mealsList} setMeals={setMealsList} />
 

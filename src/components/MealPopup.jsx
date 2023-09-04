@@ -41,7 +41,7 @@ const MealPopup = ({ setTogglePopup, setMealsList, mealsList }) => {
       onClick={handleOutside}
     >
       <div
-        className="mx-auto mt-28 min-h-[50vh] w-1/3 rounded-md border border-gray-500 bg-yellow-100 p-4"
+        className="mx-auto mt-28 min-h-[50vh] w-1/3 rounded-md border border-gray-500 bg-white p-4"
         id="inside"
       >
         <h2 className="text-xl">Create Meals List</h2>
@@ -87,7 +87,8 @@ const MealPopup = ({ setTogglePopup, setMealsList, mealsList }) => {
             </div>
           ) : (
             <button
-              className="mx-auto w-3/12 rounded-md bg-blue-500 px-3 py-1 text-white hover:outline hover:outline-gray-500"
+              className="mx-auto w-3/12 rounded-md bg-blue-500
+               px-3 py-1 text-white hover:outline hover:outline-gray-500"
               onClick={handleAddMeal}
             >
               Add Meal
@@ -98,7 +99,7 @@ const MealPopup = ({ setTogglePopup, setMealsList, mealsList }) => {
           {meals?.map((meal, index) => (
             <li
               key={index}
-              className="text-md border-b-1 mb-2 flex items-center justify-between rounded-lg border border-gray-500 bg-violet-300 p-2"
+              className="text-md border-b-1 mb-2 flex items-center justify-between rounded-lg border border-gray-500 bg-violet-400 p-2"
             >
               <span>{meal}</span>
               <div className="space-x-2">

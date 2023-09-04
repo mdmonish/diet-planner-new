@@ -9,7 +9,7 @@ const DayMealContainer = ({ dietDetails, setDietDetails }) => {
       <div className="border-red grid grid-cols-8">
         {dietDetails.map((meal, i) => (
           <>
-            <div className="mb-2 mr-4 rounded-md border border-black bg-yellow-100 p-4 shadow-xl">
+            <div className="mb-2 mr-4 rounded-md border border-black bg-white p-4 shadow-xl">
               <MealType
                 mealDetails={meal.mealDetails}
                 id={i}

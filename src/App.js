@@ -27,7 +27,7 @@ function App() {
           <div></div>
           {days.map((day, index) => (
             <h3
-              className="rounded-lg border border-gray-500 bg-yellow-100 px-3 py-1 text-gray-800 shadow-lg"
+              className="rounded-lg border border-gray-500 bg-white px-3 py-1 text-gray-800 shadow-lg"
               key={`${day}~~${index}`}
             >
               {day}
