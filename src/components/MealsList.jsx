@@ -14,7 +14,7 @@ const MealsList = ({ meals, setMeals }) => {
   return (
     <div>
       <ul className="h-[20vh] overflow-y-auto py-1">
-        {meals.map((meal, index) => (
+        {meals?.map((meal, index) => (
           <>
             <li
               key={index}
