@@ -81,10 +81,6 @@ function App() {
     setDietDetails((prev) => [...prev, DEFAULT_MEAL]);
   };
 
-  // const handleReset = () => {
-  //   setSelectedWeek
-  // }
-  console.log("week", selectedWeek);
   return (
     <div className="App">
       <PDFDownloadLink document={<PDF mealData={mealData} />} fileName="md.pdf">
@@ -144,23 +140,6 @@ function App() {
           setDietDetails={setDietDetails}
         />
       )}
-      <div className="container mx-auto">
-        <div className="grid h-[10vh] grid-cols-8 place-items-center">
-          <div></div>
-          {days.map((day, index) => (
-            <h3
-              className="rounded-lg border border-gray-500 bg-white px-3 py-1 text-gray-800 shadow-lg"
-              key={`${day}~~${index}`}
-            >
-              {day}
-            </h3>
-          ))}
-        </div>
-      </div>
-      <DayMealContainer
-        dietDetails={dietDetails}
-        setDietDetails={setDietDetails}
-      />
     </div>
   );
 }
