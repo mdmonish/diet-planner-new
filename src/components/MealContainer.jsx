@@ -13,17 +13,26 @@ const MealContainer = ({
   setDietDetails,
 }) => {
   const [togglePopup, setTogglePopup] = useState(false);
-  const [mealsList, setMealsList] = useState([]);
+  const [mealsList, setMealsList] = useState(day.items);
+
+  console.log("meal0", mealsList);
+  // useEffect(() => {
+  //   console.log("onaos");
+  //   if (day) setMealsList(day.items);
+  // }, [day]);
 
   useEffect(() => {
-    if (day) setMealsList(day.items);
-  }, [day]);
-
-  useEffect(() => {
+    console.log("oasssasa");
     const copy = [...dietDetails];
     copy[id].Days[dayId] = { ...copy[id].Days[dayId], items: mealsList };
     setDietDetails(copy);
   }, [mealsList]);
+
+  const handleAddMeal = (id, dayId) => {
+    const copy = [...dietDetails];
+    copy[id].Days[dayId] = { ...copy[id].Days[dayId], items: mealsList };
+    setDietDetails(copy);
+  };
 
   const findIndex = (mealData, selected) => {
     return mealData.Days.findIndex((day) => day.dayId === selected.dayId);
