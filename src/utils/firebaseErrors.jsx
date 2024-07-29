@@ -1,16 +1,12 @@
-export const getFirebaseErrorMessage = (code) => {
-  const errorMessages = {
-    "auth/email-already-in-use":
-      "This email is already in use. Please login instead.",
-    "auth/weak-password":
-      "The password is too weak. Please use at least 6 characters.",
-    "auth/user-not-found": "No account found with this email.",
-    "auth/operation-not-allowed": "Please verify your email before logging in.",
-    "auth/wrong-password": "The password is incorrect.",
-    "auth/invalid-email": "The email address is invalid.",
-    "auth/network-request-failed": "Network error. Please try again.",
-    default: "An unexpected error occurred. Please try again.",
-  };
+const firebaseErrorMessages = {
+  "auth/email-already-in-use": "This email is already in use.",
+  "auth/invalid-email": "Incorrect email/password.",
+  "auth/user-not-found": "No user found with this email.",
+  "auth/wrong-password": "Incorrect email/password.",
+  "auth/weak-password": "Password should be at least 6 characters.",
+  "auth/operation-not-allowed": "Please verify your email before logging in.",
+};
 
-  return errorMessages[code] || errorMessages.default;
+export const getFirebaseErrorMessage = (errorCode) => {
+  return firebaseErrorMessages[errorCode] || "An unknown error occurred.";
 };

@@ -1,4 +1,3 @@
-// src/components/Signup.jsx
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useFirebase } from "../Firebase";
@@ -24,7 +23,7 @@ const Signup = () => {
     try {
       await signUpWithEmail(email, password);
       setMessage(
-        "Verification email sent. Please check your inbox and verify your email.",
+        "Verification email sent. Please check your inbox and verify your email before logging in.",
       );
       setTimeout(() => {
         navigate("/");
@@ -37,7 +36,7 @@ const Signup = () => {
   return (
     <div className="flex min-h-screen flex-col items-center justify-center bg-gray-100 px-4 sm:px-6 lg:px-8">
       <div className="w-full max-w-md space-y-8">
-        <h1 className="text-center text-3xl font-bold">Signup</h1>
+        <h1 className="text-center text-3xl font-bold">Sign Up</h1>
         {error && <div className="text-red-500">{error}</div>}
         {message && <div className="text-green-500">{message}</div>}
         <form onSubmit={handleSignup} className="mt-8 space-y-6">
@@ -57,14 +56,14 @@ const Signup = () => {
           />
           <button
             type="submit"
-            className="group relative flex w-full justify-center rounded-md border border-transparent bg-green-600 px-4 py-2 text-sm font-medium text-white hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2"
+            className="group relative flex w-full justify-center rounded-md border border-transparent bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
           >
             Sign Up
           </button>
         </form>
         <div className="mt-4 flex flex-col justify-between md:flex-row">
           <Link to="/" className="text-indigo-600 hover:text-indigo-500">
-            Already have an account? Login instead
+            Already have an account? Login
           </Link>
         </div>
       </div>

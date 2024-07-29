@@ -10,9 +10,16 @@ import {
   sendPasswordResetEmail,
   sendEmailVerification,
   signOut,
-  fetchSignInMethodsForEmail,
 } from "firebase/auth";
-import { getFirestore, collection, getDocs } from "firebase/firestore";
+import {
+  getFirestore,
+  collection,
+  getDocs,
+  doc,
+  setDoc,
+  getDoc,
+  updateDoc,
+} from "firebase/firestore";
 import { getFirebaseErrorMessage } from "./utils/firebaseErrors"; // Import the error mapping function
 
 // Firebase configuration
@@ -49,20 +56,36 @@ export const FirebaseProvider = ({ children }) => {
     return () => unsubscribe();
   }, []);
 
-  const signInWithGoogle = () => signInWithPopup(auth, googleProvider);
+  const signInWithGoogle = async () => {
+    try {
+      const userCredential = await signInWithPopup(auth, googleProvider);
+      const userDoc = await getDoc(doc(db, "users", userCredential.user.uid));
+      if (!userDoc.exists()) {
+        await setDoc(doc(db, "users", userCredential.user.uid), {
+          email: userCredential.user.email,
+          isVerified: true,
+          isFormSubmitted: false,
+        });
+      }
+      return userCredential;
+    } catch (error) {
+      throw new Error(getFirebaseErrorMessage(error.code));
+    }
+  };
 
   const signUpWithEmail = async (email, password) => {
     try {
-      const signInMethods = await fetchSignInMethodsForEmail(auth, email);
-      if (signInMethods.length > 0) {
-        throw new Error("auth/email-already-in-use");
-      }
       const userCredential = await createUserWithEmailAndPassword(
         auth,
         email,
         password,
       );
       await sendEmailVerification(userCredential.user);
+      await setDoc(doc(db, "users", userCredential.user.uid), {
+        email: email,
+        isVerified: false,
+        isFormSubmitted: false,
+      });
       await signOut(auth); // Sign out immediately after creating the user and sending the verification email
       return userCredential;
     } catch (error) {
@@ -81,6 +104,18 @@ export const FirebaseProvider = ({ children }) => {
         await signOut(auth);
         throw new Error("auth/operation-not-allowed");
       }
+      const userDoc = await getDoc(doc(db, "users", userCredential.user.uid));
+      if (!userDoc.exists()) {
+        await signOut(auth);
+        throw new Error("auth/operation-not-allowed");
+      }
+      if (userDoc.data().isVerified === false) {
+        await setDoc(doc(db, "users", userCredential.user.uid), {
+          email: email,
+          isVerified: true,
+          isFormSubmitted: false,
+        });
+      }
       return userCredential;
     } catch (error) {
       throw new Error(getFirebaseErrorMessage(error.code));
@@ -89,8 +124,11 @@ export const FirebaseProvider = ({ children }) => {
 
   const resetPassword = async (email) => {
     try {
-      const signInMethods = await fetchSignInMethodsForEmail(auth, email);
-      if (signInMethods.length === 0) {
+      const userSnapshot = await getDocs(collection(db, "users"));
+      const userData = userSnapshot.docs
+        .map((doc) => doc.data())
+        .find((user) => user.email === email);
+      if (!userData) {
         throw new Error("auth/user-not-found");
       }
       await sendPasswordResetEmail(auth, email);
