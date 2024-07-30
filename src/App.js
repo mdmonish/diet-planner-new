@@ -156,8 +156,11 @@ import ForgotPassword from "./components/ForgotPassword";
 import Dashboard from "./components/Dashboard";
 import ProtectedRoute from "./components/ProtectedRoute";
 import "./App.css";
+import FormSuccess from "./components/FormSuccess";
+import CustomForm from "./components/CustomForm";
 
 const App = () => {
+  // const { user } = useFirebase();
   return (
     <FirebaseProvider>
       <Router>
@@ -165,6 +168,8 @@ const App = () => {
           <Route path="/" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
           <Route path="/forgot-password" element={<ForgotPassword />} />
+          <Route path="/form-success" element={<FormSuccess />} />
+          {/* <Route path="/custom-form" element={<CustomForm user={user} />} /> */}
           <Route
             path="/dashboard"
             element={

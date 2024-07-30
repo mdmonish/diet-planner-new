@@ -19,7 +19,9 @@ import {
   setDoc,
   getDoc,
   updateDoc,
+  addDoc,
 } from "firebase/firestore";
+import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { getFirebaseErrorMessage } from "./utils/firebaseErrors"; // Import the error mapping function
 
 // Firebase configuration
@@ -37,6 +39,7 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
+const storage = getStorage();
 const googleProvider = new GoogleAuthProvider();
 
 // Create context
@@ -146,6 +149,28 @@ export const FirebaseProvider = ({ children }) => {
     return data;
   };
 
+  const saveFormResponse = async (userId, formResponse) => {
+    const responseRef = doc(
+      db,
+      `users/${userId}/formresponse`,
+      `${new Date().toISOString()}`,
+    );
+    await setDoc(responseRef, formResponse);
+  };
+
+  const markFormAsSubmitted = async (userId) => {
+    const userRef = doc(db, `users/${userId}`);
+    await updateDoc(userRef, {
+      isFormSubmitted: true,
+    });
+  };
+
+  const uploadFile = async (file) => {
+    const fileRef = ref(storage, `uploads/${user.uid}/${file.name}`);
+    await uploadBytes(fileRef, file);
+    return getDownloadURL(fileRef);
+  };
+
   return (
     <FirebaseContext.Provider
       value={{
@@ -156,6 +181,9 @@ export const FirebaseProvider = ({ children }) => {
         resetPassword,
         logout,
         fetchCollection,
+        saveFormResponse,
+        markFormAsSubmitted,
+        uploadFile,
       }}
     >
       {children}

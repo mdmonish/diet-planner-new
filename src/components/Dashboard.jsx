@@ -1,27 +1,21 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import { useFirebase } from "../Firebase";
+import { getAuth } from "firebase/auth";
+import CustomForm from "./CustomForm";
 
 const Dashboard = () => {
   const navigate = useNavigate();
-  const { user, logout } = useFirebase();
-
-  const handleLogout = async () => {
-    try {
-      await logout();
-      navigate("/");
-    } catch (error) {
-      console.error("Error logging out: ", error);
-    }
-  };
+  const auth = getAuth();
+  const user = auth.currentUser;
 
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center bg-gray-100">
+    <div className="container mx-auto p-4">
       <h1 className="mb-4 text-3xl font-bold">Dashboard</h1>
-      <p className="mb-4">Welcome, {user?.email}</p>
+      <p>Welcome, {user.email}</p>
+      <CustomForm user={user} />
       <button
-        onClick={handleLogout}
-        className="rounded bg-red-500 px-4 py-2 text-white transition duration-300 hover:bg-red-600"
+        className="mt-4 rounded bg-red-500 px-4 py-2 text-white"
+        onClick={() => auth.signOut()}
       >
         Logout
       </button>
