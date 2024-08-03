@@ -39,7 +39,7 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
-const storage = getStorage();
+const storage = getStorage(app);
 const googleProvider = new GoogleAuthProvider();
 
 // Create context
@@ -166,7 +166,8 @@ export const FirebaseProvider = ({ children }) => {
   };
 
   const uploadFile = async (file) => {
-    const fileRef = ref(storage, `uploads/${user.uid}/${file.name}`);
+    if (!file) return null;
+    const fileRef = ref(storage, `uploads/${file.name}`);
     await uploadBytes(fileRef, file);
     return getDownloadURL(fileRef);
   };

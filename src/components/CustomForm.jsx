@@ -1,16 +1,42 @@
 import React, { useState } from "react";
 import { useFirebase } from "../Firebase";
 import { useNavigate } from "react-router-dom";
+import Loader from "./Loader";
 
 const CustomForm = ({ user }) => {
   const { saveFormResponse, markFormAsSubmitted, uploadFile } = useFirebase();
   const [formData, setFormData] = useState({
-    shortAnswer: "",
-    longAnswer: "",
-    radioOption: "",
-    date: "",
-    file: null,
+    email: "",
+    name: "",
+    age: "",
+    gender: "",
+    weight: "",
+    height: "",
+    physicalActivity: "",
+    economicStatus: "",
+    foodChoice: "",
+    requirements: "",
+    symptoms: "",
+    surgicalHistory: "",
+    medicalReports: null,
+    foodAllergies: "",
+    foodLikes: "",
+    foodDislikes: "",
+    smokingDrinkingHabit: "",
+    weightLoss: "",
+    dailyDiet: "",
+    sleepWakeTime: "",
+    medications: "",
+    outsideFoodFrequency: "",
+    digestiveIssues: "",
+    bodyPicture: null,
+    waterIntake: "",
+    dietStartDate: "",
+    paymentScreenshot: null,
+    additionalInfo: "",
   });
+
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
   const handleChange = (e) => {
@@ -23,504 +49,416 @@ const CustomForm = ({ user }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true);
     try {
-      let fileUrl = "";
-      if (formData.file) {
-        fileUrl = await uploadFile(formData.file);
+      const uploadedFiles = {};
+      for (const key in formData) {
+        if (formData[key] instanceof File) {
+          uploadedFiles[key] = await uploadFile(formData[key]);
+        }
       }
 
       const formResponse = {
         ...formData,
-        file: fileUrl,
+        ...uploadedFiles,
       };
 
       // Save response to Firestore
       await saveFormResponse(user.uid, formResponse);
       await markFormAsSubmitted(user.uid);
 
+      // Save response to Google Sheets
+      //   await submitToGoogleSheets(formResponse);
+
       // Redirect to success page
       navigate("/form-success");
     } catch (error) {
       console.error("Error submitting form:", error);
+    } finally {
+      setLoading(false);
     }
   };
 
+  //   const submitToGoogleSheets = async (formResponse) => {
+  //     const scriptURL = "YOUR_GOOGLE_APPS_SCRIPT_WEB_APP_URL";
+
+  //     await fetch(scriptURL, {
+  //       method: "POST",
+  //       body: JSON.stringify(formResponse),
+  //       headers: {
+  //         "Content-Type": "application/json",
+  //       },
+  //     });
+  //   };
+
   return (
-    <form onSubmit={handleSubmit} className="space-y-4">
-      <div className="mt-4">
-        <label className="block text-sm font-medium text-gray-700">
-          Email ✱
-        </label>
-        <input
-          type="text"
-          name="Email"
-          value={formData.shortAnswer}
-          onChange={handleChange}
-          className="mt-1 block w-full rounded-md border border-gray-300 shadow-sm"
-          required
-        />
-      </div>
-      <div className="mt-4">
-        <label className="block text-sm font-medium text-gray-700">
-          Name ✱
-        </label>
-        <input
-          type="text"
-          name="Name"
-          value={formData.shortAnswer}
-          onChange={handleChange}
-          className="mt-1 block w-full rounded-md border border-gray-300 shadow-sm"
-          required
-        />
-      </div>
-      <div className="mt-4">
-        <label className="block text-sm font-medium text-gray-700">Age ✱</label>
-        <input
-          type="text"
-          name="Age"
-          value={formData.shortAnswer}
-          onChange={handleChange}
-          className="mt-1 block w-full rounded-md border border-gray-300 shadow-sm"
-          required
-        />
-      </div>
-      <div className="mt-4">
-        <label className="block text-sm font-medium text-gray-700">
-          Gender ✱
-        </label>
-        <div className="mt-1 flex flex-col">
-          <label>
+    <>
+      {loading ? (
+        <Loader />
+      ) : (
+        <form onSubmit={handleSubmit} className="space-y-4 p-4 md:p-8">
+          <div className="mt-4">
+            <label className="block text-sm font-medium text-gray-700">
+              Email ✱
+            </label>
             <input
-              type="radio"
-              name="radioOption"
-              value="Male"
-              checked={formData.radioOption === "Male"}
+              type="email"
+              name="email"
+              value={formData.email}
               onChange={handleChange}
+              className="mt-1 block w-full rounded-md border border-gray-300 shadow-sm"
               required
             />
-            Male
-          </label>
-          <label>
+          </div>
+          <div className="mt-4">
+            <label className="block text-sm font-medium text-gray-700">
+              Name ✱
+            </label>
             <input
-              type="radio"
-              name="radioOption"
-              value="Female"
-              checked={formData.radioOption === "Female"}
+              type="text"
+              name="name"
+              value={formData.name}
               onChange={handleChange}
-            />
-            Female
-          </label>
-        </div>
-      </div>
-      <div className="mt-4">
-        <label className="block text-sm font-medium text-gray-700">
-          Weight (exact) ✱
-        </label>
-        <input
-          type="text"
-          name="Weight"
-          value={formData.shortAnswer}
-          onChange={handleChange}
-          className="mt-1 block w-full rounded-md border border-gray-300 shadow-sm"
-          required
-        />
-      </div>
-      <div className="mt-4">
-        <label className="block text-sm font-medium text-gray-700">
-          Height ✱
-        </label>
-        <input
-          type="text"
-          name="Height"
-          value={formData.shortAnswer}
-          onChange={handleChange}
-          className="mt-1 block w-full rounded-md border border-gray-300 shadow-sm"
-          required
-        />
-      </div>
-      <div className="mt-4">
-        <label className="block text-sm font-medium text-gray-700">
-          Physical Activity ✱
-        </label>
-        <div className="mt-1 flex flex-col">
-          <label>
-            <input
-              type="radio"
-              name="radioOption"
-              value="Bedridden"
-              checked={formData.radioOption === "Bedridden"}
-              onChange={handleChange}
+              className="mt-1 block w-full rounded-md border border-gray-300 shadow-sm"
               required
             />
-            Bedridden
-          </label>
-          <label>
+          </div>
+          <div className="mt-4">
+            <label className="block text-sm font-medium text-gray-700">
+              Age ✱
+            </label>
             <input
-              type="radio"
-              name="radioOption"
-              value="Light"
-              checked={formData.radioOption === "Light"}
+              type="number"
+              name="age"
+              value={formData.age}
               onChange={handleChange}
-            />
-            Light
-          </label>
-          <label>
-            <input
-              type="radio"
-              name="radioOption"
-              value="Medium"
-              checked={formData.radioOption === "Medium"}
-              onChange={handleChange}
-            />
-            Medium
-          </label>
-          <label>
-            <input
-              type="radio"
-              name="radioOption"
-              value="Heavy"
-              checked={formData.radioOption === "Heavy"}
-              onChange={handleChange}
-            />
-            Heavy
-          </label>
-        </div>
-      </div>
-
-      <div className="mt-4">
-        <label className="block text-sm font-medium text-gray-700">
-          Economic Status ✱
-        </label>
-        <div className="mt-1 flex flex-col">
-          <label>
-            <input
-              type="radio"
-              name="radioOption"
-              value="Low income group"
-              checked={formData.radioOption === "Low income group"}
-              onChange={handleChange}
+              className="mt-1 block w-full rounded-md border border-gray-300 shadow-sm"
               required
             />
-            Low income group
-          </label>
-          <label>
+          </div>
+          <div className="mt-4">
+            <label className="block text-sm font-medium text-gray-700">
+              Gender ✱
+            </label>
             <input
-              type="radio"
-              name="radioOption"
-              value="Middle income group"
-              checked={formData.radioOption === "Middle income group"}
+              type="text"
+              name="gender"
+              value={formData.gender}
               onChange={handleChange}
-            />
-            Middle income group
-          </label>
-          <label>
-            <input
-              type="radio"
-              name="radioOption"
-              value="High income group"
-              checked={formData.radioOption === "High income group"}
-              onChange={handleChange}
-            />
-            High income group
-          </label>
-        </div>
-      </div>
-
-      <div className="mt-4">
-        <label className="block text-sm font-medium text-gray-700">
-          Food Choice ✱
-        </label>
-        <div className="mt-1 flex flex-col">
-          <label>
-            <input
-              type="radio"
-              name="radioOption"
-              value="Non vegetarian"
-              checked={formData.radioOption === "Non vegetarian"}
-              onChange={handleChange}
+              className="mt-1 block w-full rounded-md border border-gray-300 shadow-sm"
               required
             />
-            Non vegetarian
-          </label>
-          <label>
+          </div>
+          <div className="mt-4">
+            <label className="block text-sm font-medium text-gray-700">
+              Weight ✱
+            </label>
             <input
-              type="radio"
-              name="radioOption"
-              value="Vegetarian (with egg)"
-              checked={formData.radioOption === "Vegetarian (with egg)"}
+              type="number"
+              name="weight"
+              value={formData.weight}
               onChange={handleChange}
+              className="mt-1 block w-full rounded-md border border-gray-300 shadow-sm"
+              required
             />
-            Vegetarian (with egg)
-          </label>
-          <label>
+          </div>
+          <div className="mt-4">
+            <label className="block text-sm font-medium text-gray-700">
+              Height ✱
+            </label>
             <input
-              type="radio"
-              name="radioOption"
-              value="Vegetarian (without egg)"
-              checked={formData.radioOption === "Vegetarian (without egg)"}
+              type="number"
+              name="height"
+              value={formData.height}
               onChange={handleChange}
+              className="mt-1 block w-full rounded-md border border-gray-300 shadow-sm"
+              required
             />
-            Vegetarian (without egg)
-          </label>
-        </div>
-      </div>
-
-      <div>
-        <label className="block text-sm font-medium text-gray-700">
-          Specify your requirements (if suffering from a disease, kindly
-          mention) ✱
-        </label>
-        <textarea
-          name="Requirements"
-          value={formData.longAnswer}
-          onChange={handleChange}
-          className="mt-1 block w-full rounded-md border border-gray-300 shadow-sm"
-          required
-        />
-      </div>
-
-      <div className="mt-4">
-        <label className="block text-sm font-medium text-gray-700">
-          Symptoms (if any)
-        </label>
-        <textarea
-          name="Symptoms"
-          value={formData.longAnswer}
-          onChange={handleChange}
-          className="mt-1 block w-full rounded-md border border-gray-300 shadow-sm"
-        />
-      </div>
-
-      <div className="mt-4">
-        <label className="block text-sm font-medium text-gray-700">
-          If any surgical history, kindly mention
-        </label>
-        <textarea
-          name="Surgical History"
-          value={formData.longAnswer}
-          onChange={handleChange}
-          className="mt-1 block w-full rounded-md border border-gray-300 shadow-sm"
-        />
-      </div>
-
-      <div className="mt-4">
-        <label className="block text-sm font-medium text-gray-700">
-          Attach medical reports (if any)
-        </label>
-        <input
-          type="file"
-          name="Medical Reports"
-          onChange={handleChange}
-          className="mt-1 block w-full rounded-md border border-gray-300 shadow-sm"
-        />
-      </div>
-
-      <div className="mt-4">
-        <label className="block text-sm font-medium text-gray-700">
-          Are you allergic to any food? If yes, kindly mention those foods
-        </label>
-        <textarea
-          name="Allergic to Food"
-          value={formData.longAnswer}
-          onChange={handleChange}
-          className="mt-1 block w-full rounded-md border border-gray-300 shadow-sm"
-        />
-      </div>
-
-      <div className="mt-4">
-        <label className="block text-sm font-medium text-gray-700">
-          Food you like
-        </label>
-        <input
-          type="text"
-          name="Like Food"
-          value={formData.shortAnswer}
-          onChange={handleChange}
-          className="mt-1 block w-full rounded-md border border-gray-300 shadow-sm"
-        />
-      </div>
-
-      <div className="mt-4">
-        <label className="block text-sm font-medium text-gray-700">
-          Food you don't like
-        </label>
-        <input
-          type="text"
-          name="Dislike Food"
-          value={formData.shortAnswer}
-          onChange={handleChange}
-          className="mt-1 block w-full rounded-md border border-gray-300 shadow-sm"
-        />
-      </div>
-
-      <div className="mt-4">
-        <label className="block text-sm font-medium text-gray-700">
-          Drinking or smoking habit? Please specify ✱
-        </label>
-        <input
-          type="text"
-          name="Drinking/Smoking Habit"
-          value={formData.shortAnswer}
-          onChange={handleChange}
-          className="mt-1 block w-full rounded-md border border-gray-300 shadow-sm"
-          required
-        />
-      </div>
-
-      <div className="mt-4">
-        <label className="block text-sm font-medium text-gray-700">
-          Have you lost weight in the last 1 year, if yes how much? ✱
-        </label>
-        <input
-          type="text"
-          name="Lost Weight in 1 year"
-          value={formData.shortAnswer}
-          onChange={handleChange}
-          className="mt-1 block w-full rounded-md border border-gray-300 shadow-sm"
-          required
-        />
-      </div>
-
-      <div className="mt-4">
-        <label className="block text-sm font-medium text-gray-700">
-          What you eat in a day and at what time? ✱
-        </label>
-        <textarea
-          name="Eat Foods in a day with time"
-          value={formData.longAnswer}
-          onChange={handleChange}
-          className="mt-1 block w-full rounded-md border border-gray-300 shadow-sm"
-          required
-        />
-      </div>
-
-      <div className="mt-4">
-        <label className="block text-sm font-medium text-gray-700">
-          Wake up and sleep time ✱
-        </label>
-        <input
-          type="text"
-          name="Wake up and sleep time"
-          value={formData.shortAnswer}
-          onChange={handleChange}
-          className="mt-1 block w-full rounded-md border border-gray-300 shadow-sm"
-          required
-        />
-      </div>
-
-      <div className="mt-4">
-        <label className="block text-sm font-medium text-gray-700">
-          Medicine or supplements if taking
-        </label>
-        <input
-          type="text"
-          name="Medicine/Supplements"
-          value={formData.shortAnswer}
-          onChange={handleChange}
-          className="mt-1 block w-full rounded-md border border-gray-300 shadow-sm"
-        />
-      </div>
-
-      <div className="mt-4">
-        <label className="block text-sm font-medium text-gray-700">
-          How many times you eat outside food in a week? ✱
-        </label>
-        <input
-          type="text"
-          name="How many times you eat outside food in a week?"
-          value={formData.shortAnswer}
-          onChange={handleChange}
-          className="mt-1 block w-full rounded-md border border-gray-300 shadow-sm"
-          required
-        />
-      </div>
-
-      <div className="mt-4">
-        <label className="block text-sm font-medium text-gray-700">
-          Digestive issues if any
-        </label>
-        <input
-          type="text"
-          name="Digestive issues"
-          value={formData.shortAnswer}
-          onChange={handleChange}
-          className="mt-1 block w-full rounded-md border border-gray-300 shadow-sm"
-        />
-      </div>
-
-      <div className="mt-4">
-        <label className="block text-sm font-medium text-gray-700">
-          Recent straight body picture ✱
-        </label>
-        <input
-          type="file"
-          name="Recent straight body picture"
-          onChange={handleChange}
-          className="mt-1 block w-full rounded-md border border-gray-300 shadow-sm"
-          required
-        />
-      </div>
-
-      <div className="mt-4">
-        <label className="block text-sm font-medium text-gray-700">
-          Water intake ✱
-        </label>
-        <input
-          type="text"
-          name="Water intake"
-          value={formData.shortAnswer}
-          onChange={handleChange}
-          className="mt-1 block w-full rounded-md border border-gray-300 shadow-sm"
-          required
-        />
-      </div>
-
-      <div className="mt-4">
-        <label className="block text-sm font-medium text-gray-700">
-          Diet start date ✱
-        </label>
-        <input
-          type="date"
-          name="Diet start date"
-          value={formData.date}
-          onChange={handleChange}
-          className="mt-1 block w-full rounded-md border border-gray-300 shadow-sm"
-          required
-        />
-      </div>
-
-      <div className="mt-4">
-        <label className="block text-sm font-medium text-gray-700">
-          UPI ID- rahnumazarrin7@oksbi Payment screenshot ✱
-        </label>
-        <input
-          type="file"
-          name="Payment screenshot"
-          onChange={handleChange}
-          className="mt-1 block w-full rounded-md border border-gray-300 shadow-sm"
-          required
-        />
-      </div>
-
-      <div className="mt-4">
-        <label className="block text-sm font-medium text-gray-700">
-          Anything else you want to mention
-        </label>
-        <textarea
-          name="Additional Information"
-          value={formData.longAnswer}
-          onChange={handleChange}
-          className="mt-1 block w-full rounded-md border border-gray-300 shadow-sm"
-        />
-      </div>
-
-      <button
-        type="submit"
-        className="rounded-md bg-blue-500 px-4 py-2 text-white"
-      >
-        Submit
-      </button>
-    </form>
+          </div>
+          <div className="mt-4">
+            <label className="block text-sm font-medium text-gray-700">
+              Physical activity ✱
+            </label>
+            <input
+              type="text"
+              name="physicalActivity"
+              value={formData.physicalActivity}
+              onChange={handleChange}
+              className="mt-1 block w-full rounded-md border border-gray-300 shadow-sm"
+              required
+            />
+          </div>
+          <div className="mt-4">
+            <label className="block text-sm font-medium text-gray-700">
+              Economic Status ✱
+            </label>
+            <input
+              type="text"
+              name="economicStatus"
+              value={formData.economicStatus}
+              onChange={handleChange}
+              className="mt-1 block w-full rounded-md border border-gray-300 shadow-sm"
+              required
+            />
+          </div>
+          <div className="mt-4">
+            <label className="block text-sm font-medium text-gray-700">
+              Food Choice (e.g., Veg, Non-veg, Eggetarian)
+            </label>
+            <input
+              type="text"
+              name="foodChoice"
+              value={formData.foodChoice}
+              onChange={handleChange}
+              className="mt-1 block w-full rounded-md border border-gray-300 shadow-sm"
+              required
+            />
+          </div>
+          <div className="mt-4">
+            <label className="block text-sm font-medium text-gray-700">
+              Specify your requirements (if suffering from a disease, kindly
+              mention) ✱
+            </label>
+            <input
+              type="text"
+              name="requirements"
+              value={formData.requirements}
+              onChange={handleChange}
+              className="mt-1 block w-full rounded-md border border-gray-300 shadow-sm"
+              required
+            />
+          </div>
+          <div className="mt-4">
+            <label className="block text-sm font-medium text-gray-700">
+              Symptoms
+            </label>
+            <input
+              type="text"
+              name="symptoms"
+              value={formData.symptoms}
+              onChange={handleChange}
+              className="mt-1 block w-full rounded-md border border-gray-300 shadow-sm"
+            />
+          </div>
+          <div className="mt-4">
+            <label className="block text-sm font-medium text-gray-700">
+              Surgical History
+            </label>
+            <input
+              type="text"
+              name="surgicalHistory"
+              value={formData.surgicalHistory}
+              onChange={handleChange}
+              className="mt-1 block w-full rounded-md border border-gray-300 shadow-sm"
+            />
+          </div>
+          <div className="mt-4">
+            <label className="block text-sm font-medium text-gray-700">
+              Medical Reports
+            </label>
+            <input
+              type="file"
+              name="medicalReports"
+              onChange={handleChange}
+              className="mt-1 block w-full rounded-md border border-gray-300 shadow-sm"
+            />
+          </div>
+          <div className="mt-4">
+            <label className="block text-sm font-medium text-gray-700">
+              Food Allergies
+            </label>
+            <input
+              type="text"
+              name="foodAllergies"
+              value={formData.foodAllergies}
+              onChange={handleChange}
+              className="mt-1 block w-full rounded-md border border-gray-300 shadow-sm"
+            />
+          </div>
+          <div className="mt-4">
+            <label className="block text-sm font-medium text-gray-700">
+              Food Likes
+            </label>
+            <input
+              type="text"
+              name="foodLikes"
+              value={formData.foodLikes}
+              onChange={handleChange}
+              className="mt-1 block w-full rounded-md border border-gray-300 shadow-sm"
+            />
+          </div>
+          <div className="mt-4">
+            <label className="block text-sm font-medium text-gray-700">
+              Food Dislikes
+            </label>
+            <input
+              type="text"
+              name="foodDislikes"
+              value={formData.foodDislikes}
+              onChange={handleChange}
+              className="mt-1 block w-full rounded-md border border-gray-300 shadow-sm"
+            />
+          </div>
+          <div className="mt-4">
+            <label className="block text-sm font-medium text-gray-700">
+              Smoking/Drinking Habit ✱
+            </label>
+            <input
+              type="text"
+              name="smokingDrinkingHabit"
+              value={formData.smokingDrinkingHabit}
+              onChange={handleChange}
+              className="mt-1 block w-full rounded-md border border-gray-300 shadow-sm"
+              required
+            />
+          </div>
+          <div className="mt-4">
+            <label className="block text-sm font-medium text-gray-700">
+              Tried weight loss before? Y/N If yes, details. ✱
+            </label>
+            <input
+              type="text"
+              name="weightLoss"
+              value={formData.weightLoss}
+              onChange={handleChange}
+              className="mt-1 block w-full rounded-md border border-gray-300 shadow-sm"
+              required
+            />
+          </div>
+          <div className="mt-4">
+            <label className="block text-sm font-medium text-gray-700">
+              Describe your daily diet ✱
+            </label>
+            <input
+              type="text"
+              name="dailyDiet"
+              value={formData.dailyDiet}
+              onChange={handleChange}
+              className="mt-1 block w-full rounded-md border border-gray-300 shadow-sm"
+              required
+            />
+          </div>
+          <div className="mt-4">
+            <label className="block text-sm font-medium text-gray-700">
+              Sleep and Wake up time ✱
+            </label>
+            <input
+              type="text"
+              name="sleepWakeTime"
+              value={formData.sleepWakeTime}
+              onChange={handleChange}
+              className="mt-1 block w-full rounded-md border border-gray-300 shadow-sm"
+              required
+            />
+          </div>
+          <div className="mt-4">
+            <label className="block text-sm font-medium text-gray-700">
+              Any medication? Y/N If yes, details
+            </label>
+            <input
+              type="text"
+              name="medications"
+              value={formData.medications}
+              onChange={handleChange}
+              className="mt-1 block w-full rounded-md border border-gray-300 shadow-sm"
+            />
+          </div>
+          <div className="mt-4">
+            <label className="block text-sm font-medium text-gray-700">
+              How many times do you eat outside food in a week? ✱
+            </label>
+            <input
+              type="text"
+              name="outsideFoodFrequency"
+              value={formData.outsideFoodFrequency}
+              onChange={handleChange}
+              className="mt-1 block w-full rounded-md border border-gray-300 shadow-sm"
+              required
+            />
+          </div>
+          <div className="mt-4">
+            <label className="block text-sm font-medium text-gray-700">
+              Digestive issues
+            </label>
+            <input
+              type="text"
+              name="digestiveIssues"
+              value={formData.digestiveIssues}
+              onChange={handleChange}
+              className="mt-1 block w-full rounded-md border border-gray-300 shadow-sm"
+            />
+          </div>
+          <div className="mt-4">
+            <label className="block text-sm font-medium text-gray-700">
+              Straight Body Picture ✱
+            </label>
+            <input
+              type="file"
+              name="bodyPicture"
+              onChange={handleChange}
+              className="mt-1 block w-full rounded-md border border-gray-300 shadow-sm"
+              required
+            />
+          </div>
+          <div className="mt-4">
+            <label className="block text-sm font-medium text-gray-700">
+              Water intake (in liters) ✱
+            </label>
+            <input
+              type="text"
+              name="waterIntake"
+              value={formData.waterIntake}
+              onChange={handleChange}
+              className="mt-1 block w-full rounded-md border border-gray-300 shadow-sm"
+              required
+            />
+          </div>
+          <div className="mt-4">
+            <label className="block text-sm font-medium text-gray-700">
+              When do you want to start your diet plan? Mention the date. ✱
+            </label>
+            <input
+              type="text"
+              name="dietStartDate"
+              value={formData.dietStartDate}
+              onChange={handleChange}
+              className="mt-1 block w-full rounded-md border border-gray-300 shadow-sm"
+              required
+            />
+          </div>
+          <div className="mt-4">
+            <label className="block text-sm font-medium text-gray-700">
+              Screenshot of payment ✱
+            </label>
+            <input
+              type="file"
+              name="paymentScreenshot"
+              onChange={handleChange}
+              className="mt-1 block w-full rounded-md border border-gray-300 shadow-sm"
+              required
+            />
+          </div>
+          <div className="mt-4">
+            <label className="block text-sm font-medium text-gray-700">
+              Additional information
+            </label>
+            <input
+              type="text"
+              name="additionalInfo"
+              value={formData.additionalInfo}
+              onChange={handleChange}
+              className="mt-1 block w-full rounded-md border border-gray-300 shadow-sm"
+            />
+          </div>
+          <button
+            type="submit"
+            className="rounded-md bg-blue-500 px-4 py-2 text-white"
+          >
+            Submit
+          </button>
+        </form>
+      )}
+    </>
   );
 };
 

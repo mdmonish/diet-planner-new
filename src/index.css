@@ -2,24 +2,68 @@
 @tailwind components;
 @tailwind utilities;
 
-
 ::-webkit-scrollbar {
-    width: 5px;
-    border-radius: 20px;
+  width: 5px;
+  border-radius: 20px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 30px;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: #888;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+
+.loader-bar {
+  display: flex;
+  justify-content: space-between;
+  width: 100px;
+  height: 30px;
+}
+
+.loader-bar .bar {
+  width: 15px;
+  height: 100%;
+  background-color: #3498db;
+  animation: bar-animation 1s infinite ease-in-out;
+}
+
+.loader-bar .bar:nth-child(1) {
+  animation-delay: 0s;
+}
+
+.loader-bar .bar:nth-child(2) {
+  animation-delay: 0.1s;
+}
+
+.loader-bar .bar:nth-child(3) {
+  animation-delay: 0.2s;
+}
+
+.loader-bar .bar:nth-child(4) {
+  animation-delay: 0.3s;
+}
+
+.loader-bar .bar:nth-child(5) {
+  animation-delay: 0.4s;
+}
+
+@keyframes bar-animation {
+  0%,
+  40%,
+  100% {
+    transform: scaleY(0.4);
   }
-  
-  /* Track */
-  ::-webkit-scrollbar-track {
-    background: #f1f1f1; 
-    border-radius: 30px;
+  20% {
+    transform: scaleY(1);
   }
-   
-  /* Handle */
-  ::-webkit-scrollbar-thumb {
-    background: #888; 
-  }
-  
-  /* Handle on hover */
-  ::-webkit-scrollbar-thumb:hover {
-    background: #555; 
-  }
+}
