@@ -37,11 +37,7 @@ function App() {
   const [weeklyMeal, setWeeklyMeal] = useState("");
   const [selectedWeek, setSelectedWeek] = useState(DEFAULT_WEEK);
   const [isEnable, setIsEnable] = useState(false);
-  // useEffect(() => {
-  //   if (dietDetails) {
-  //     setDietDetails(dietDetails);
-  //   }
-  // }, [dietDetails]);
+
   useEffect(() => {
     if (dietDetails) {
       setSelectedWeek((prev) => ({ ...prev, list: dietDetails }));
