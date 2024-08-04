@@ -96,7 +96,17 @@ const CustomForm = ({ user }) => {
       {loading ? (
         <Loader />
       ) : (
-        <form onSubmit={handleSubmit} className="space-y-4 p-4 md:p-8">
+        <form
+          onSubmit={handleSubmit}
+          className="space-y-4 p-4 md:p-8 lg:w-2/3 lg:flex-col lg:items-center lg:justify-center"
+        >
+          <button
+            type="button"
+            onClick={() => navigate("/logout")} // Change to your logout functionality
+            className="absolute right-4 top-4 text-red-500"
+          >
+            Logout
+          </button>
           <div className="mt-4">
             <label className="block text-sm font-medium text-gray-700">
               Email ✱
@@ -179,48 +189,78 @@ const CustomForm = ({ user }) => {
             <label className="block text-sm font-medium text-gray-700">
               Physical activity ✱
             </label>
-            <input
-              type="text"
-              name="physicalActivity"
-              value={formData.physicalActivity}
-              onChange={handleChange}
-              className="mt-1 block w-full rounded-md border border-gray-300 shadow-sm"
-              required
-            />
+            <div className="flex flex-col">
+              {["bedridden", "light", "medium", "heavy"].map((activity) => (
+                <label key={activity} className="inline-flex items-center">
+                  <input
+                    type="radio"
+                    name="physicalActivity"
+                    value={activity}
+                    checked={formData.physicalActivity === activity}
+                    onChange={handleChange}
+                    className="form-radio"
+                    required
+                  />
+                  <span className="ml-2">{activity}</span>
+                </label>
+              ))}
+            </div>
           </div>
           <div className="mt-4">
             <label className="block text-sm font-medium text-gray-700">
               Economic Status ✱
             </label>
-            <input
-              type="text"
-              name="economicStatus"
-              value={formData.economicStatus}
-              onChange={handleChange}
-              className="mt-1 block w-full rounded-md border border-gray-300 shadow-sm"
-              required
-            />
+            <div className="flex flex-col">
+              {[
+                "Low income group",
+                "middle income group",
+                "high income group",
+              ].map((status) => (
+                <label key={status} className="inline-flex items-center">
+                  <input
+                    type="radio"
+                    name="economicStatus"
+                    value={status}
+                    checked={formData.economicStatus === status}
+                    onChange={handleChange}
+                    className="form-radio"
+                    required
+                  />
+                  <span className="ml-2">{status}</span>
+                </label>
+              ))}
+            </div>
           </div>
           <div className="mt-4">
             <label className="block text-sm font-medium text-gray-700">
-              Food Choice (e.g., Veg, Non-veg, Eggetarian)
+              Food Choice ✱
             </label>
-            <input
-              type="text"
-              name="foodChoice"
-              value={formData.foodChoice}
-              onChange={handleChange}
-              className="mt-1 block w-full rounded-md border border-gray-300 shadow-sm"
-              required
-            />
+            <div className="flex flex-col">
+              {[
+                "non vegetarian",
+                "vegetarian (with egg)",
+                "vegetarian (without egg)",
+              ].map((choice) => (
+                <label key={choice} className="inline-flex items-center">
+                  <input
+                    type="radio"
+                    name="foodChoice"
+                    value={choice}
+                    checked={formData.foodChoice === choice}
+                    onChange={handleChange}
+                    className="form-radio"
+                    required
+                  />
+                  <span className="ml-2">{choice}</span>
+                </label>
+              ))}
+            </div>
           </div>
           <div className="mt-4">
             <label className="block text-sm font-medium text-gray-700">
-              Specify your requirements (if suffering from a disease, kindly
-              mention) ✱
+              Requirements (if suffering from a disease, kindly mention) ✱
             </label>
-            <input
-              type="text"
+            <textarea
               name="requirements"
               value={formData.requirements}
               onChange={handleChange}
@@ -232,8 +272,7 @@ const CustomForm = ({ user }) => {
             <label className="block text-sm font-medium text-gray-700">
               Symptoms
             </label>
-            <input
-              type="text"
+            <textarea
               name="symptoms"
               value={formData.symptoms}
               onChange={handleChange}
@@ -244,8 +283,7 @@ const CustomForm = ({ user }) => {
             <label className="block text-sm font-medium text-gray-700">
               Surgical History
             </label>
-            <input
-              type="text"
+            <textarea
               name="surgicalHistory"
               value={formData.surgicalHistory}
               onChange={handleChange}
@@ -260,15 +298,14 @@ const CustomForm = ({ user }) => {
               type="file"
               name="medicalReports"
               onChange={handleChange}
-              className="mt-1 block w-full rounded-md border border-gray-300 shadow-sm"
+              className="mt-1 block w-full rounded-md"
             />
           </div>
           <div className="mt-4">
             <label className="block text-sm font-medium text-gray-700">
               Food Allergies
             </label>
-            <input
-              type="text"
+            <textarea
               name="foodAllergies"
               value={formData.foodAllergies}
               onChange={handleChange}
@@ -279,8 +316,7 @@ const CustomForm = ({ user }) => {
             <label className="block text-sm font-medium text-gray-700">
               Food Likes
             </label>
-            <input
-              type="text"
+            <textarea
               name="foodLikes"
               value={formData.foodLikes}
               onChange={handleChange}
@@ -291,8 +327,7 @@ const CustomForm = ({ user }) => {
             <label className="block text-sm font-medium text-gray-700">
               Food Dislikes
             </label>
-            <input
-              type="text"
+            <textarea
               name="foodDislikes"
               value={formData.foodDislikes}
               onChange={handleChange}
@@ -329,8 +364,7 @@ const CustomForm = ({ user }) => {
             <label className="block text-sm font-medium text-gray-700">
               Describe your daily diet ✱
             </label>
-            <input
-              type="text"
+            <textarea
               name="dailyDiet"
               value={formData.dailyDiet}
               onChange={handleChange}
@@ -396,7 +430,7 @@ const CustomForm = ({ user }) => {
               type="file"
               name="bodyPicture"
               onChange={handleChange}
-              className="mt-1 block w-full rounded-md border border-gray-300 shadow-sm"
+              className="mt-1 block w-full rounded-md"
               required
             />
           </div>
@@ -418,7 +452,7 @@ const CustomForm = ({ user }) => {
               When do you want to start your diet plan? Mention the date. ✱
             </label>
             <input
-              type="text"
+              type="date"
               name="dietStartDate"
               value={formData.dietStartDate}
               onChange={handleChange}
@@ -434,7 +468,7 @@ const CustomForm = ({ user }) => {
               type="file"
               name="paymentScreenshot"
               onChange={handleChange}
-              className="mt-1 block w-full rounded-md border border-gray-300 shadow-sm"
+              className="mt-1 block w-full rounded-md"
               required
             />
           </div>
@@ -442,8 +476,7 @@ const CustomForm = ({ user }) => {
             <label className="block text-sm font-medium text-gray-700">
               Additional information
             </label>
-            <input
-              type="text"
+            <textarea
               name="additionalInfo"
               value={formData.additionalInfo}
               onChange={handleChange}
