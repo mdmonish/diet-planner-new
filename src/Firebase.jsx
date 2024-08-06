@@ -81,23 +81,6 @@ export const FirebaseProvider = ({ children }) => {
     return () => unsubscribe();
   }, []);
 
-  // const signInWithGoogle = async () => {
-  //   try {
-  //     const userCredential = await signInWithPopup(auth, googleProvider);
-  //     const userDoc = await getDoc(doc(db, "users", userCredential.user.uid));
-  //     if (!userDoc.exists()) {
-  //       await setDoc(doc(db, "users", userCredential.user.uid), {
-  //         email: userCredential.user.email,
-  //         isVerified: true,
-  //         isFormSubmitted: false,
-  //       });
-  //     }
-  //     return userCredential;
-  //   } catch (error) {
-  //     throw new Error(getFirebaseErrorMessage(error.code));
-  //   }
-  // };
-
   const signInWithGoogle = async () => {
     try {
       const userCredential = await signInWithPopup(auth, googleProvider);
@@ -108,7 +91,7 @@ export const FirebaseProvider = ({ children }) => {
         // If the user document doesn't exist, create it
         await setDoc(userDocRef, {
           email: userCredential.user.email,
-          isAdmin: false, // Set default isAdmin value
+          isAdmin: false,
           isVerified: true,
           isFormSubmitted: false,
         });
@@ -237,6 +220,47 @@ export const FirebaseProvider = ({ children }) => {
     return userDoc.exists() ? userDoc.data() : null;
   };
 
+  const fetchAllUserDetails = async () => {
+    const usersCollection = collection(db, "users");
+    const usersSnapshot = await getDocs(usersCollection);
+    const users = [];
+
+    for (const userDoc of usersSnapshot.docs) {
+      const userData = userDoc.data();
+      const formResponsesSnapshot = await getDocs(
+        collection(db, `users/${userDoc.id}/formresponse`),
+      );
+      const formResponses = formResponsesSnapshot.docs.map((doc) => doc.data());
+
+      users.push({
+        ...userData,
+        id: userDoc.id,
+        formResponses: formResponses,
+      });
+    }
+
+    return users;
+  };
+
+  const fetchUserDetails = async (userId) => {
+    const userDoc = await getDoc(doc(db, "users", userId));
+    if (!userDoc.exists()) {
+      throw new Error("User not found");
+    }
+    const userData = userDoc.data();
+
+    const formResponsesSnapshot = await getDocs(
+      collection(db, `users/${userId}/formresponse`),
+    );
+    const formResponses = formResponsesSnapshot.docs.map((doc) => doc.data());
+
+    return {
+      ...userData,
+      id: userId,
+      formResponses: formResponses,
+    };
+  };
+
   return (
     <FirebaseContext.Provider
       value={{
@@ -252,6 +276,8 @@ export const FirebaseProvider = ({ children }) => {
         markFormAsSubmitted,
         uploadFile,
         fetchUserData,
+        fetchAllUserDetails,
+        fetchUserDetails,
       }}
     >
       {children}
