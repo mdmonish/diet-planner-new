@@ -37,7 +37,6 @@ const Login = () => {
   const handleGoogleLogin = async () => {
     try {
       await signInWithGoogle();
-      console.log("UUUUUSSEERRR: ", user?.isAdmin);
       if (user?.isAdmin === true) {
         navigate("/admin-dashboard");
       } else {
