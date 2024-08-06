@@ -51,25 +51,76 @@ export const useFirebase = () => useContext(FirebaseContext);
 // Provider component
 export const FirebaseProvider = ({ children }) => {
   const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
-      setUser(currentUser?.emailVerified ? currentUser : null);
+    const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
+      if (currentUser?.emailVerified) {
+        try {
+          const userDoc = await getDoc(doc(db, "users", currentUser.uid));
+          if (userDoc.exists()) {
+            const userData = userDoc.data();
+            const newUser = {
+              ...currentUser,
+              isAdmin: userData.isAdmin || false,
+            };
+            console.log("Logged in user:", newUser); // Add this line
+            setUser(newUser);
+          } else {
+            setUser(null);
+          }
+        } catch (error) {
+          console.error("Failed to fetch user data:", error);
+          setUser(null);
+        }
+      } else {
+        setUser(null);
+      }
+      setLoading(false);
     });
     return () => unsubscribe();
   }, []);
 
+  // const signInWithGoogle = async () => {
+  //   try {
+  //     const userCredential = await signInWithPopup(auth, googleProvider);
+  //     const userDoc = await getDoc(doc(db, "users", userCredential.user.uid));
+  //     if (!userDoc.exists()) {
+  //       await setDoc(doc(db, "users", userCredential.user.uid), {
+  //         email: userCredential.user.email,
+  //         isVerified: true,
+  //         isFormSubmitted: false,
+  //       });
+  //     }
+  //     return userCredential;
+  //   } catch (error) {
+  //     throw new Error(getFirebaseErrorMessage(error.code));
+  //   }
+  // };
+
   const signInWithGoogle = async () => {
     try {
       const userCredential = await signInWithPopup(auth, googleProvider);
-      const userDoc = await getDoc(doc(db, "users", userCredential.user.uid));
+      const userDocRef = doc(db, "users", userCredential.user.uid);
+      const userDoc = await getDoc(userDocRef);
+
       if (!userDoc.exists()) {
-        await setDoc(doc(db, "users", userCredential.user.uid), {
+        // If the user document doesn't exist, create it
+        await setDoc(userDocRef, {
           email: userCredential.user.email,
+          isAdmin: false, // Set default isAdmin value
           isVerified: true,
           isFormSubmitted: false,
         });
       }
+
+      // Fetch the user document to ensure the state is updated correctly
+      const updatedUserDoc = await getDoc(userDocRef);
+      setUser({
+        ...userCredential.user,
+        isAdmin: updatedUserDoc.data().isAdmin || false,
+      });
+
       return userCredential;
     } catch (error) {
       throw new Error(getFirebaseErrorMessage(error.code));
@@ -88,6 +139,7 @@ export const FirebaseProvider = ({ children }) => {
         email: email,
         isVerified: false,
         isFormSubmitted: false,
+        isAdmin: false,
       });
       await signOut(auth); // Sign out immediately after creating the user and sending the verification email
       return userCredential;
@@ -117,6 +169,7 @@ export const FirebaseProvider = ({ children }) => {
           email: email,
           isVerified: true,
           isFormSubmitted: false,
+          isAdmin: false,
         });
       }
       return userCredential;
@@ -140,7 +193,14 @@ export const FirebaseProvider = ({ children }) => {
     }
   };
 
-  const logout = () => signOut(auth);
+  const logout = async () => {
+    try {
+      await signOut(auth);
+      setUser(null); // Reset user state on sign out
+    } catch (error) {
+      console.error("Sign out error:", error);
+    }
+  };
 
   const fetchCollection = async (collectionName) => {
     const collectionRef = collection(db, collectionName);
@@ -172,10 +232,16 @@ export const FirebaseProvider = ({ children }) => {
     return getDownloadURL(fileRef);
   };
 
+  const fetchUserData = async (userId) => {
+    const userDoc = await getDoc(doc(db, "users", userId));
+    return userDoc.exists() ? userDoc.data() : null;
+  };
+
   return (
     <FirebaseContext.Provider
       value={{
         user,
+        loading,
         signInWithGoogle,
         signUpWithEmail,
         signInWithEmail,
@@ -185,6 +251,7 @@ export const FirebaseProvider = ({ children }) => {
         saveFormResponse,
         markFormAsSubmitted,
         uploadFile,
+        fetchUserData,
       }}
     >
       {children}

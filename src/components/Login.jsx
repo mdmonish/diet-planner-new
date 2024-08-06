@@ -8,7 +8,7 @@ const Login = () => {
   const [error, setError] = useState(null);
   const [message, setMessage] = useState(null);
   const navigate = useNavigate();
-  const { signInWithEmail, signInWithGoogle } = useFirebase();
+  const { signInWithEmail, signInWithGoogle, user } = useFirebase();
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -22,7 +22,13 @@ const Login = () => {
     }
     try {
       await signInWithEmail(email, password);
-      navigate("/dashboard");
+      if (user?.isAdmin === true) {
+        console.log("admin dashboard navigation");
+        navigate("/admin-dashboard");
+      } else {
+        console.log("user dashboard navigation");
+        navigate("/dashboard");
+      }
     } catch (error) {
       setError(error.message);
     }
@@ -31,7 +37,12 @@ const Login = () => {
   const handleGoogleLogin = async () => {
     try {
       await signInWithGoogle();
-      navigate("/dashboard");
+      console.log("UUUUUSSEERRR: ", user?.isAdmin);
+      if (user?.isAdmin === true) {
+        navigate("/admin-dashboard");
+      } else {
+        navigate("/dashboard");
+      }
     } catch (error) {
       setError(error.message);
     }
