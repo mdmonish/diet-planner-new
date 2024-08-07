@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import "./App.css";
 import DayMealContainer from "./components/DayMealContainer";
-import { mealData, DEFAULT_MEAL_DATA } from "./data";
+import { mealData, DEFAULT_MEAL_DATA, UserList } from "./data.js";
 import { PDFDownloadLink } from "@react-pdf/renderer";
 import PDF from "./PDF";
 import DatePicker from "react-datepicker";
@@ -31,6 +31,7 @@ function App() {
   const days = ["Day 1", "Day 2", "Day 3", "Day 4", "Day 5", "Day 6", "Day 7"];
 
   const [dietDetails, setDietDetails] = useState(DEFAULT_MEAL_DATA);
+  const [users, setUsers] = useState(UserList);
   const [actions, setActions] = useState("");
   const [selectedDate, setSelectedDate] = useState("");
   const [endDate, setEndDate] = useState("");
@@ -90,30 +91,38 @@ function App() {
     setDietDetails(DEFAULT_MEAL_DATA);
   };
 
+  const handleSave = () => {
+    // find user on basis of selection
+    //add meal in the list
+  };
+
   return (
     <div className="App">
       <div className="flex justify-between pl-4">
-        <DatePicker
-          showIcon
-          selected={selectedDate}
-          dateFormat="dd/MM/yyyy"
-          onChange={(date) => handleDate(date)}
-          minDate={new Date()}
-          placeholderText="Select a start date"
-        />
-        <DatePicker
-          showIcon
-          selected={endDate}
-          dateFormat="dd/MM/yyyy"
-          disabled
-          minDate={new Date()}
-          placeholderText="Select a end date"
-        />
-        <>
+        <div>
+          {" "}
+          <DatePicker
+            showIcon
+            selected={selectedDate}
+            dateFormat="dd/MM/yyyy"
+            onChange={(date) => handleDate(date)}
+            minDate={new Date()}
+            placeholderText="Select a start date"
+          />
+          <DatePicker
+            showIcon
+            selected={endDate}
+            dateFormat="dd/MM/yyyy"
+            disabled
+            minDate={new Date()}
+            placeholderText="Select a end date"
+          />
+        </div>
+        <div>
           {" "}
           <button onClick={handleReset}>Reset Meal Item</button>
           <button>Save</button>
-        </>
+        </div>
       </div>
 
       <div className="container mx-auto">
