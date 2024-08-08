@@ -23,7 +23,7 @@ const AppRoutes = () => {
   const { user, loading } = useFirebase();
 
   if (loading) {
-    return <Loader />; // or a loading spinner
+    return <Loader />;
   }
 
   return (
